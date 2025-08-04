@@ -1,40 +1,117 @@
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<html lang="ko">
+<head>
+	<meta charset="utf-8">
+	<title>비트코인 가상거래 플랫폼 발표</title>
 
-		<title>reveal.js</title>
+	<!-- Reveal.js 기본 CSS -->
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/black.css" id="theme">
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+	<!-- 코드 하이라이팅용 -->
+	<link rel="stylesheet" href="plugin/highlight/monokai.css">
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+	<style>
+		/* 이미지나 GIF 크기 조절용 */
+		img {
+			max-width: 70%;
+			border-radius: 10px;
+			margin-top: 10px;
+		}
+	</style>
+</head>
+<body>
+<div class="reveal">
+	<div class="slides">
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+		<!-- 1. 인트로 -->
+		<section>
+			<h1>비트코인 가상거래 플랫폼</h1>
+			<p>국내 4대 거래소 시세 기반 가상 투자 서비스</p>
+			<small>팀 프로젝트 발표</small>
+		</section>
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
+		<!-- 2. 프로젝트 소개 -->
+		<section>
+			<h2>프로젝트 소개</h2>
+			<ul>
+				<li>국내 4대 거래소(업비트, 빗썸, 코인원, 고팍스) 시세 연동</li>
+				<li>회원 가입 시 5억 가상 머니 지급</li>
+				<li>실시간 시세 기반 가상 매수·매도 가능</li>
+				<li>거래 내역과 보유 코인 확인 기능</li>
+			</ul>
+		</section>
+
+		<!-- 3. 아키텍처 -->
+		<section>
+			<h2>시스템 아키텍처</h2>
+			<img src="images/architecture.png" alt="architecture diagram">
+			<p><small>백엔드(Spring Boot) - DB(MySQL) - Upbit API 연동 구조</small></p>
+		</section>
+
+		<!-- 4. 핵심 기능 -->
+		<section>
+			<h2>핵심 기능 데모</h2>
+			<ul>
+				<li>실시간 코인 시세 조회</li>
+				<li>가상 머니 입금 및 거래</li>
+				<li>거래 내역 조회 및 보유 현황 확인</li>
+			</ul>
+			<img src="images/demo.gif" alt="데모 영상">
+		</section>
+
+		<!-- 5. 주요 코드 예시 -->
+		<section>
+			<h2>주요 코드: Upbit API 연동</h2>
+			<pre><code class="language-java">
+@Component
+public class UpBitApiClient {
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    public CoinPriceResponse getPrice(String symbol) {
+        String url = "https://api.upbit.com/v1/ticker?markets=KRW-" + symbol;
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        JsonNode node = new ObjectMapper().readTree(response.getBody()).get(0);
+
+        return new CoinPriceResponse(
+            symbol.toUpperCase(),
+            null,
+            new BigDecimal(node.get("trade_price").asText()),
+            new BigDecimal(node.get("change_rate").asText())
+        );
+    }
+}
+        </code></pre>
+		</section>
+
+		<!-- 6. 느낀 점 -->
+		<section>
+			<h2>프로젝트를 통해 배운 점</h2>
+			<ul>
+				<li>외부 API 연동과 JSON 파싱 경험</li>
+				<li>JPA 기반 DB 설계와 트랜잭션 처리</li>
+				<li>가상 거래 로직 설계 및 예외 처리</li>
+			</ul>
+		</section>
+
+		<!-- 7. 마무리 -->
+		<section>
+			<h2>감사합니다</h2>
+			<p>데모: <a href="https://lcs9317.github.io/">https://lcs9317.github.io/</a></p>
+			<p>질문 환영합니다 🙌</p>
+		</section>
+
+	</div>
+</div>
+
+<!-- Reveal.js 및 플러그인 로드 -->
+<script src="dist/reveal.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+	Reveal.initialize({
+		hash: true,
+		plugins: [ RevealHighlight ]
+	});
+</script>
+</body>
 </html>
